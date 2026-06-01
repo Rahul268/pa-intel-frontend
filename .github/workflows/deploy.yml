@@ -27,24 +27,17 @@ jobs:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: vercel link --yes --token="$VERCEL_TOKEN"
 
-      - name: Pull Vercel environment
+      - name: Set backend URL env var
+        run: echo "NEXT_PUBLIC_BACKEND_URL=https://pa-intel-api.onrender.com" > .env.production
+
+      - name: Vercel build (production)
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: vercel build --token="$VERCEL_TOKEN"
+
+      - name: Deploy prebuilt to production
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
-          vercel env pull .env.production --yes --token="$VERCEL_TOKEN" || true
-          echo "NEXT_PUBLIC_BACKEND_URL=https://pa-intel-api.onrender.com" >> .env.production
-
-      - name: Build with Vercel
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-        run: vercel build --prod --token="$VERCEL_TOKEN"
-
-      - name: Deploy prebuilt output
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-        run: |
-          OUTPUT=$(vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN" 2>&1)
-          echo "$OUTPUT"
-          URL=$(echo "$OUTPUT" | grep -oE 'https://[a-zA-Z0-9.-]+\.vercel\.app' | tail -1)
-          echo "Deployed: $URL"
+          vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
           echo "Live: https://pa-intel-frontend.vercel.app"
