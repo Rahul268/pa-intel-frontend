@@ -22,21 +22,34 @@ jobs:
       - name: Install Vercel CLI
         run: npm install -g vercel@latest
 
-      - name: Deploy to Vercel (no cache)
+      - name: Link Vercel project
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
-          vercel --prod \
-            --yes \
-            --no-cache \
-            --token="$VERCEL_TOKEN" \
-            --env NEXT_PUBLIC_BACKEND_URL=https://pa-intel-api.onrender.com \
-            2>&1 | tee /tmp/vercel_out.txt
+          vercel link --yes --token="$VERCEL_TOKEN"
+          echo "Project linked:"
+          cat .vercel/project.json
 
-          cat /tmp/vercel_out.txt
+      - name: Pull Vercel env
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          vercel env pull .env.production --yes --token="$VERCEL_TOKEN" || true
+          # Ensure NEXT_PUBLIC_BACKEND_URL is set
+          echo "NEXT_PUBLIC_BACKEND_URL=https://pa-intel-api.onrender.com" >> .env.production
+
+      - name: Build (local, from source)
+        run: npm run build
+
+      - name: Deploy prebuilt to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          OUTPUT=$(vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN" 2>&1)
+          echo "$OUTPUT"
+          URL=$(echo "$OUTPUT" | grep -oE 'https://[a-zA-Z0-9.-]+\.vercel\.app' | tail -1)
           echo ""
-          PROD_URL=$(grep -oP 'https://[a-zA-Z0-9-]+\.vercel\.app' /tmp/vercel_out.txt | tail -1)
           echo "=============================="
-          echo "Live URL: https://pa-intel-frontend.vercel.app"
-          echo "Build URL: $PROD_URL"
+          echo "Deployed to: $URL"
+          echo "Canonical:   https://pa-intel-frontend.vercel.app"
           echo "=============================="
