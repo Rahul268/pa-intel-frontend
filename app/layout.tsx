@@ -1,3 +1,4 @@
+// v: 2026-06-01 07:08 UTC
 import type { Metadata } from "next";
 import "./globals.css";
 

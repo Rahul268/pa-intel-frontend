@@ -1,3 +1,4 @@
+// v: 2026-06-01 07:08 UTC
 "use client";
 
 export interface ExtractedRow {
