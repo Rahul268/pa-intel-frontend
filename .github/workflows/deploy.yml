@@ -22,20 +22,30 @@ jobs:
       - name: Install Vercel CLI
         run: npm install -g vercel@latest
 
-      - name: Deploy to Vercel
+      - name: Deploy to Vercel and capture URL
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
-          vercel --prod \
+          OUTPUT=$(vercel --prod \
             --yes \
             --token="$VERCEL_TOKEN" \
             --env NEXT_PUBLIC_BACKEND_URL=https://pa-intel-api.onrender.com \
-            2>&1 | tee deploy_output.txt
-
-          # Extract and display the deployment URL
-          DEPLOY_URL=$(grep -oP 'https://[^ ]+\.vercel\.app' deploy_output.txt | tail -1)
+            2>&1)
+          echo "$OUTPUT"
+          
+          # Extract the production URL
+          PROD_URL=$(echo "$OUTPUT" | grep -oP 'https://[a-zA-Z0-9-]+\.vercel\.app' | tail -1)
           echo ""
+          echo "DEPLOYMENT_URL=$PROD_URL" >> $GITHUB_OUTPUT
           echo "======================================"
-          echo "✅ DEPLOYMENT COMPLETE"
-          echo "🌐 Live URL: $DEPLOY_URL"
+          echo "✅ LIVE URL: $PROD_URL"
           echo "======================================"
+          
+          # Write URL to a file in the repo for retrieval
+          echo "$PROD_URL" > deployment_url.txt
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+          git add deployment_url.txt
+          git commit -m "Save deployment URL [skip ci]" || true
+          git push "https://Rahul268:${{ secrets.GITHUB_TOKEN }}@github.com/Rahul268/pa-intel-frontend.git" HEAD:main || true
+        id: deploy
