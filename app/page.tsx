@@ -1,5 +1,5 @@
-// v: 2026-06-01 07:08 UTC
 "use client";
+// v: 2026-06-01 07:10 UTC
 import Nav from "@/components/Nav";
 import {
   submissions, getScoreDistribution, getBrandBreakdown,

@@ -1,4 +1,3 @@
-// v: 2026-06-01 07:08 UTC
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -32,3 +31,4 @@ export default function Nav() {
     </nav>
   );
 }
+// v: 2026-06-01 07:10 UTC

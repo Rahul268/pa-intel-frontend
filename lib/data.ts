@@ -1,4 +1,3 @@
-// v: 2026-06-01 07:08 UTC
 export interface Submission {
   filename: string; brand: string; payerType: string;
   age: string; stepTherapy: string; brandedSteps: string;
@@ -1166,3 +1165,4 @@ export const SCORE_COLORS:Record<number,string>={0:"#C0180C",25:"#B45309",50:"#9
 export const SCORE_BG:Record<number,string>={0:"#FEF0EF",25:"#FEF4E6",50:"#FEFBE6",75:"#E9F9F1",100:"#E6F6F4"};
 export const SCORE_BORDER:Record<number,string>={0:"#FBCCC9",25:"#FDD9A0",50:"#F5D060",75:"#A3E6C3",100:"#99DDD8"};
 export const PAYER_COLORS:Record<string,string>={"Commercial":"#0066CC","State Medicaid":"#7C3AED","PBM":"#059669","Unknown":"#9CA3AF"};
+// v: 2026-06-01 07:10 UTC

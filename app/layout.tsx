@@ -1,4 +1,3 @@
-// v: 2026-06-01 07:08 UTC
 import type { Metadata } from "next";
 import "./globals.css";
 
@@ -17,3 +16,4 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   );
 }
+// v: 2026-06-01 07:10 UTC
