@@ -3,88 +3,46 @@
 @tailwind utilities;
 
 :root {
-  --bg:       #F0F2F5;
-  --surface:  #FFFFFF;
-  --border:   #E2E6EC;
-  --border2:  #D1D9E0;
-  --text:     #0F1923;
-  --text2:    #3D4E5C;
-  --muted:    #6B7D8E;
-  --light:    #9AAAB8;
-
-  --navy:     #0A2540;
-  --blue:     #0066CC;
-  --blue-dim: #EEF5FF;
-  --teal:     #008C7E;
-  --teal-dim: #E6F6F4;
-  --green:    #0A7A45;
-  --green-dim:#E6F4EC;
-  --red:      #C0180C;
-  --red-dim:  #FEF0EF;
-  --amber:    #B45309;
-  --amber-dim:#FEF8ED;
-  --purple:   #6B21A8;
-  --purple-dim:#F5F0FF;
-
-  --shadow-sm: 0 1px 3px rgba(15,25,35,0.06), 0 1px 2px rgba(15,25,35,0.04);
-  --shadow-md: 0 4px 12px rgba(15,25,35,0.08), 0 2px 4px rgba(15,25,35,0.04);
-
-  --mono: 'IBM Plex Mono', monospace;
-  --sans: 'Inter', sans-serif;
-  --display: 'Syne', sans-serif;
+  --bg:      #F4F5F7;
+  --surface: #FFFFFF;
+  --bd:      #E2E6EC;
+  --bd2:     #D1D5DB;
+  --navy:    #1B2A4A;
+  --blue:    #0066CC;
+  --blue-bg: #EEF5FF;
+  --blue-bd: #BDD5F5;
+  --text:    #1B2A4A;
+  --text2:   #374151;
+  --muted:   #6B7280;
+  --light:   #9CA3AF;
+  --green:   #0A7A45;
+  --teal:    #008C7E;
+  --amber:   #92630A;
+  --orange:  #B45309;
+  --red:     #C0180C;
+  --purple:  #7C3AED;
+  --shadow:  0 2px 8px rgba(27,42,74,0.07);
+  --shadow-md: 0 4px 16px rgba(27,42,74,0.10);
 }
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;font-size:13.5px;line-height:1.6;-webkit-font-smoothing:antialiased}
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#D1D5DB;border-radius:99px}
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--sans);
-  font-size: 14px;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-}
+.score-50{background:#FEFBE6;color:#92630A;border:1.5px solid #F5D060}
+.score-75{background:#E9F9F1;color:#0A7A45;border:1.5px solid #A3E6C3}
+.score-100{background:#E6F6F4;color:#008C7E;border:1.5px solid #99DDD8}
+.score-25{background:#FEF4E6;color:#B45309;border:1.5px solid #FDD9A0}
+.score-0{background:#FEF0EF;color:#C0180C;border:1.5px solid #FBCCC9}
 
-.font-display { font-family: var(--display); }
-.font-mono    { font-family: var(--mono); }
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp .3s ease both}
+.fade-up-1{animation:fadeUp .3s .04s ease both}
+.fade-up-2{animation:fadeUp .3s .08s ease both}
+.fade-up-3{animation:fadeUp .3s .12s ease both}
+.fade-up-4{animation:fadeUp .3s .16s ease both}
 
-::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: var(--muted); }
-
-/* Score pill colours */
-.score-0   { background:#FEF0EF; color:#C0180C; border:1px solid #FBCCC9; }
-.score-25  { background:#FEF4E6; color:#B45309; border:1px solid #FDD9A0; }
-.score-50  { background:#FEFBE6; color:#92630A; border:1px solid #FAE090; }
-.score-75  { background:#E9F9F1; color:#0A7A45; border:1px solid #A3E6C3; }
-.score-100 { background:#E6F6F4; color:#008C7E; border:1px solid #99DDD8; }
-
-/* Payer type badge */
-.payer-commercial { background:#EEF5FF; color:#0055AA; border:1px solid #BDD5F5; }
-.payer-medicaid   { background:#F5F0FF; color:#5B16A0; border:1px solid #D4BBFF; }
-.payer-pbm        { background:#E9F9F1; color:#0A7A45; border:1px solid #A3E6C3; }
-.payer-unknown    { background:#F2F4F6; color:#6B7D8E; border:1px solid #D1D9E0; }
-
-@keyframes fadeUp {
-  from { opacity:0; transform:translateY(10px); }
-  to   { opacity:1; transform:translateY(0); }
-}
-.fade-up   { animation: fadeUp .35s ease both; }
-.fade-up-1 { animation: fadeUp .35s .05s ease both; }
-.fade-up-2 { animation: fadeUp .35s .10s ease both; }
-.fade-up-3 { animation: fadeUp .35s .15s ease both; }
-.fade-up-4 { animation: fadeUp .35s .20s ease both; }
-
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-.pulse-dot { animation: pulse 1.8s ease-in-out infinite; }
-
-@keyframes shimmer {
-  from { background-position:-200% 0; }
-  to   { background-position: 200% 0; }
-}
-.shimmer {
-  background: linear-gradient(90deg, #F0F2F5 25%, #E2E6EC 50%, #F0F2F5 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.4s infinite;
-}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.pulse-dot{animation:pulse 1.8s ease-in-out infinite}
