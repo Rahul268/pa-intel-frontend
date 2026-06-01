@@ -1,5 +1,8 @@
 {
-  "framework": "nextjs",
   "buildCommand": "npm run build",
-  "outputDirectory": ".next"
+  "outputDirectory": "out",
+  "framework": "nextjs",
+  "rewrites": [
+    {"source": "/extraction", "destination": "/extraction/index.html"}
+  ]
 }
