@@ -3,84 +3,88 @@
 @tailwind utilities;
 
 :root {
-  --teal: #00d4b8;
-  --teal-dim: #00a896;
-  --blue: #4f8ef7;
-  --surface: #0e1520;
-  --surface2: #131c2a;
-  --border: #1e2d42;
-  --border2: #243447;
+  --bg:       #F0F2F5;
+  --surface:  #FFFFFF;
+  --border:   #E2E6EC;
+  --border2:  #D1D9E0;
+  --text:     #0F1923;
+  --text2:    #3D4E5C;
+  --muted:    #6B7D8E;
+  --light:    #9AAAB8;
+
+  --navy:     #0A2540;
+  --blue:     #0066CC;
+  --blue-dim: #EEF5FF;
+  --teal:     #008C7E;
+  --teal-dim: #E6F6F4;
+  --green:    #0A7A45;
+  --green-dim:#E6F4EC;
+  --red:      #C0180C;
+  --red-dim:  #FEF0EF;
+  --amber:    #B45309;
+  --amber-dim:#FEF8ED;
+  --purple:   #6B21A8;
+  --purple-dim:#F5F0FF;
+
+  --shadow-sm: 0 1px 3px rgba(15,25,35,0.06), 0 1px 2px rgba(15,25,35,0.04);
+  --shadow-md: 0 4px 12px rgba(15,25,35,0.08), 0 2px 4px rgba(15,25,35,0.04);
+
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'Inter', sans-serif;
+  --display: 'Syne', sans-serif;
 }
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: 'Inter', sans-serif;
-  background: #080c12;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
-.font-display { font-family: 'Syne', sans-serif; }
-.font-mono    { font-family: 'DM Mono', monospace; }
+.font-display { font-family: var(--display); }
+.font-mono    { font-family: var(--mono); }
 
-/* Scrollbars */
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: var(--surface); }
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 
-/* Grid background */
-.grid-bg {
-  background-image:
-    linear-gradient(rgba(79,142,247,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(79,142,247,0.04) 1px, transparent 1px);
-  background-size: 32px 32px;
-}
+/* Score pill colours */
+.score-0   { background:#FEF0EF; color:#C0180C; border:1px solid #FBCCC9; }
+.score-25  { background:#FEF4E6; color:#B45309; border:1px solid #FDD9A0; }
+.score-50  { background:#FEFBE6; color:#92630A; border:1px solid #FAE090; }
+.score-75  { background:#E9F9F1; color:#0A7A45; border:1px solid #A3E6C3; }
+.score-100 { background:#E6F6F4; color:#008C7E; border:1px solid #99DDD8; }
 
-/* Glow effects */
-.glow-teal { box-shadow: 0 0 20px rgba(0,212,184,0.15); }
-.glow-blue { box-shadow: 0 0 20px rgba(79,142,247,0.15); }
+/* Payer type badge */
+.payer-commercial { background:#EEF5FF; color:#0055AA; border:1px solid #BDD5F5; }
+.payer-medicaid   { background:#F5F0FF; color:#5B16A0; border:1px solid #D4BBFF; }
+.payer-pbm        { background:#E9F9F1; color:#0A7A45; border:1px solid #A3E6C3; }
+.payer-unknown    { background:#F2F4F6; color:#6B7D8E; border:1px solid #D1D9E0; }
 
-/* Score badge colors */
-.score-0   { background: rgba(239,68,68,0.12); color: #ef4444; border-color: rgba(239,68,68,0.25); }
-.score-25  { background: rgba(249,115,22,0.12); color: #f97316; border-color: rgba(249,115,22,0.25); }
-.score-50  { background: rgba(245,158,11,0.12); color: #f59e0b; border-color: rgba(245,158,11,0.25); }
-.score-75  { background: rgba(34,197,94,0.12); color: #22c55e; border-color: rgba(34,197,94,0.25); }
-.score-100 { background: rgba(16,185,129,0.12); color: #10b981; border-color: rgba(16,185,129,0.25); }
-
-/* Animated gradient border */
-@keyframes borderRotate {
-  from { background-position: 0% 50%; }
-  to   { background-position: 100% 50%; }
-}
-
-.animated-border {
-  position: relative;
-  border: 1px solid transparent;
-  background-clip: padding-box;
-}
-
-/* Fade in */
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity:0; transform:translateY(10px); }
+  to   { opacity:1; transform:translateY(0); }
 }
-.fade-up { animation: fadeUp 0.4s ease forwards; }
-.fade-up-1 { animation: fadeUp 0.4s 0.05s ease forwards; opacity: 0; }
-.fade-up-2 { animation: fadeUp 0.4s 0.1s ease forwards; opacity: 0; }
-.fade-up-3 { animation: fadeUp 0.4s 0.15s ease forwards; opacity: 0; }
-.fade-up-4 { animation: fadeUp 0.4s 0.2s ease forwards; opacity: 0; }
+.fade-up   { animation: fadeUp .35s ease both; }
+.fade-up-1 { animation: fadeUp .35s .05s ease both; }
+.fade-up-2 { animation: fadeUp .35s .10s ease both; }
+.fade-up-3 { animation: fadeUp .35s .15s ease both; }
+.fade-up-4 { animation: fadeUp .35s .20s ease both; }
 
-/* Pulse dot */
-@keyframes pulseDot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: 0.5; transform: scale(0.8); }
-}
-.pulse-dot { animation: pulseDot 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+.pulse-dot { animation: pulse 1.8s ease-in-out infinite; }
 
-/* Shimmer for loading */
 @keyframes shimmer {
-  from { background-position: -200% 0; }
+  from { background-position:-200% 0; }
   to   { background-position: 200% 0; }
 }
 .shimmer {
-  background: linear-gradient(90deg, #131c2a 25%, #1e2d42 50%, #131c2a 75%);
+  background: linear-gradient(90deg, #F0F2F5 25%, #E2E6EC 50%, #F0F2F5 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+  animation: shimmer 1.4s infinite;
 }
