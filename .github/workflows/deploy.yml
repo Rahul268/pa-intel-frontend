@@ -27,41 +27,50 @@ jobs:
       - name: Install Vercel CLI
         run: npm install -g vercel@latest
 
-      - name: Deploy to Vercel
-        id: deploy
+      - name: Deploy and capture production URL
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
-          set +e
-          OUTPUT=$(vercel --prod --yes \
+          # Deploy and save full output
+          vercel --prod --yes \
             --token="$VERCEL_TOKEN" \
             --env NEXT_PUBLIC_BACKEND_URL=https://pa-intel-api.onrender.com \
-            2>&1)
-          EXIT_CODE=$?
-          echo "$OUTPUT"
+            > /tmp/vercel_output.txt 2>&1 || true
+
+          cat /tmp/vercel_output.txt
+
+          # Get project name that Vercel assigned
+          PROJECT_NAME=$(vercel project ls --token="$VERCEL_TOKEN" 2>/dev/null | awk 'NR==2{print $1}' | head -1)
+          echo "Project name: $PROJECT_NAME"
+
+          # Get the production URL via vercel inspect
+          PROD_URL=$(vercel inspect --token="$VERCEL_TOKEN" "$PROJECT_NAME" 2>/dev/null | grep -i "production" | grep -oE 'https://[^ ]+' | head -1)
           
-          # Extract production URL (handles multiple URL formats Vercel outputs)
-          PROD_URL=$(echo "$OUTPUT" | grep -E 'https://[a-zA-Z0-9.-]+\.vercel\.app' | tail -1 | tr -d '[:space:]')
-          
+          # Fallback: parse from output
           if [ -z "$PROD_URL" ]; then
-            # Try alternate extraction
-            PROD_URL=$(echo "$OUTPUT" | grep -oE 'https://[^ ]+\.vercel\.app' | tail -1)
+            PROD_URL=$(cat /tmp/vercel_output.txt | grep -oE 'https://[a-zA-Z0-9-]+\.vercel\.app' | grep -v -- '-[a-z0-9]\{9\}-' | head -1)
           fi
           
-          echo "DEPLOY_URL=$PROD_URL" >> $GITHUB_OUTPUT
-          echo "$PROD_URL" > /tmp/deploy_url.txt
-          echo ""
-          echo "====================================="
-          echo "Live URL: $PROD_URL"
-          echo "====================================="
+          # Second fallback: get all URLs and pick the shortest (likely the production alias)
+          if [ -z "$PROD_URL" ]; then
+            PROD_URL=$(cat /tmp/vercel_output.txt | grep -oE 'https://[a-zA-Z0-9-]+\.vercel\.app' | awk '{ print length, $0 }' | sort -n | head -1 | awk '{print $2}')
+          fi
 
-      - name: Save URL to file
-        run: |
-          URL="${{ steps.deploy.outputs.DEPLOY_URL }}"
-          echo "$URL" > DEPLOYMENT_URL.txt
-          cat DEPLOYMENT_URL.txt
+          echo "PRODUCTION_URL=$PROD_URL" >> $GITHUB_OUTPUT
+          
+          # Save to file and commit
+          printf '%s\n' "$PROD_URL" > DEPLOYMENT_URL.txt
+          
+          # Also save full vercel output for debugging
+          cp /tmp/vercel_output.txt VERCEL_OUTPUT.txt
+          
           git config user.email "actions@github.com"
           git config user.name "GitHub Actions"
-          git add DEPLOYMENT_URL.txt
-          git diff --staged --quiet || git commit -m "ci: save deployment URL [skip ci]"
-          git push origin HEAD:main || echo "Push skipped"
+          git add DEPLOYMENT_URL.txt VERCEL_OUTPUT.txt
+          git diff --staged --quiet || git commit -m "ci: update deployment URLs [skip ci]"
+          git push origin HEAD:main || true
+          
+          echo "============================================"
+          echo "Production URL: $PROD_URL"
+          echo "============================================"
+        id: vercel
