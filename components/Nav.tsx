@@ -4,31 +4,58 @@ import { usePathname } from "next/navigation";
 
 export default function Nav() {
   const path = usePathname();
+  const links = [
+    { href: "/",           icon: "📊", label: "Dashboard"  },
+    { href: "/extraction", icon: "📤", label: "Extraction" },
+  ];
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#1B2A4A] border-b border-[#243B60] h-[52px]">
-      <div className="max-w-[1440px] mx-auto px-8 h-full flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-[30px] h-[30px] bg-[#0066CC] rounded-md flex items-center justify-center font-mono text-[11px] font-bold text-white tracking-wide">PA</div>
-          <span className="text-white font-bold text-[14px] tracking-tight">PA Intelligence</span>
-          <span className="hidden md:block text-[#4A6A8A] text-[11px] border-l border-[#243B60] pl-3 ml-1">Prior Authorization Analytics</span>
+    <nav style={{
+      position: "fixed", top: 0, left: 0, right: 0, zIndex: 50,
+      background: "#1B2A4A", borderBottom: "1px solid #243B60",
+      height: 52, display: "flex", alignItems: "center",
+    }}>
+      <div style={{
+        maxWidth: 1440, width: "100%", margin: "0 auto",
+        padding: "0 32px", display: "flex", alignItems: "center", justifyContent: "space-between",
+      }}>
+        {/* Brand */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <div style={{
+            width: 30, height: 30, background: "#0066CC", borderRadius: 6,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontFamily: "IBM Plex Mono, monospace", fontSize: 11, fontWeight: 700, color: "#fff", letterSpacing: "0.5px",
+          }}>PA</div>
+          <span style={{ color: "#fff", fontWeight: 700, fontSize: 14, letterSpacing: "-0.2px" }}>
+            PA Intelligence
+          </span>
+          <span style={{ color: "#4A6A8A", fontSize: 11, borderLeft: "1px solid #243B60", paddingLeft: 12, marginLeft: 4, display: "none" }}
+            className="md:block">
+            Prior Authorization Analytics
+          </span>
         </div>
-        <div className="flex items-center gap-1.5">
-          {([
-            ["/", "📊", "Dashboard"],
-            ["/extraction", "📤", "Extraction"],
-          ] as [string, string, string][]).map(([href, icon, label]) => (
-            <Link key={href} href={href}
-              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-md text-[12px] font-semibold transition-all duration-150 ${
-                path === href
-                  ? "bg-[#0066CC] text-white"
-                  : "text-[#8AAEC8] hover:bg-[#243B60] hover:text-white"
-              }`}>
-              <span>{icon}</span>{label}
-            </Link>
-          ))}
+
+        {/* Nav links */}
+        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+          {links.map(l => {
+            const active = path === l.href;
+            return (
+              <Link key={l.href} href={l.href} style={{
+                display: "flex", alignItems: "center", gap: 6,
+                padding: "6px 16px", borderRadius: 6,
+                fontSize: 12, fontWeight: 600,
+                background: active ? "#0066CC" : "transparent",
+                color: active ? "#fff" : "#8AAEC8",
+                textDecoration: "none",
+                transition: "all 0.15s",
+                border: active ? "none" : "1px solid transparent",
+              }}>
+                <span>{l.icon}</span>
+                {l.label}
+              </Link>
+            );
+          })}
         </div>
       </div>
     </nav>
   );
 }
-// v: 2026-06-01 07:10 UTC
