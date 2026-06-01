@@ -5,11 +5,16 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/setup-node@v4
         with:
@@ -22,30 +27,41 @@ jobs:
       - name: Install Vercel CLI
         run: npm install -g vercel@latest
 
-      - name: Deploy to Vercel and capture URL
+      - name: Deploy to Vercel
+        id: deploy
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
-          OUTPUT=$(vercel --prod \
-            --yes \
+          set +e
+          OUTPUT=$(vercel --prod --yes \
             --token="$VERCEL_TOKEN" \
             --env NEXT_PUBLIC_BACKEND_URL=https://pa-intel-api.onrender.com \
             2>&1)
+          EXIT_CODE=$?
           echo "$OUTPUT"
           
-          # Extract the production URL
-          PROD_URL=$(echo "$OUTPUT" | grep -oP 'https://[a-zA-Z0-9-]+\.vercel\.app' | tail -1)
-          echo ""
-          echo "DEPLOYMENT_URL=$PROD_URL" >> $GITHUB_OUTPUT
-          echo "======================================"
-          echo "✅ LIVE URL: $PROD_URL"
-          echo "======================================"
+          # Extract production URL (handles multiple URL formats Vercel outputs)
+          PROD_URL=$(echo "$OUTPUT" | grep -E 'https://[a-zA-Z0-9.-]+\.vercel\.app' | tail -1 | tr -d '[:space:]')
           
-          # Write URL to a file in the repo for retrieval
-          echo "$PROD_URL" > deployment_url.txt
+          if [ -z "$PROD_URL" ]; then
+            # Try alternate extraction
+            PROD_URL=$(echo "$OUTPUT" | grep -oE 'https://[^ ]+\.vercel\.app' | tail -1)
+          fi
+          
+          echo "DEPLOY_URL=$PROD_URL" >> $GITHUB_OUTPUT
+          echo "$PROD_URL" > /tmp/deploy_url.txt
+          echo ""
+          echo "====================================="
+          echo "Live URL: $PROD_URL"
+          echo "====================================="
+
+      - name: Save URL to file
+        run: |
+          URL="${{ steps.deploy.outputs.DEPLOY_URL }}"
+          echo "$URL" > DEPLOYMENT_URL.txt
+          cat DEPLOYMENT_URL.txt
           git config user.email "actions@github.com"
           git config user.name "GitHub Actions"
-          git add deployment_url.txt
-          git commit -m "Save deployment URL [skip ci]" || true
-          git push "https://Rahul268:${{ secrets.GITHUB_TOKEN }}@github.com/Rahul268/pa-intel-frontend.git" HEAD:main || true
-        id: deploy
+          git add DEPLOYMENT_URL.txt
+          git diff --staged --quiet || git commit -m "ci: save deployment URL [skip ci]"
+          git push origin HEAD:main || echo "Push skipped"
